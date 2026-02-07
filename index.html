@@ -1,36 +1,794 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en" data-theme="light">
 <head>
-    <title>Application Layer Protocols</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arjun Thakur | Portfolio</title>
+    <style>
+        :root {
+            /* LIGHT MODE VARIABLES */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #64748b;
+            --accent: #0284c7; 
+            --accent-light: #e0f2fe;
+            --timeline-line: #cbd5e1;
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --nav-border: #e2e8f0;
+            --nav-height: 70px;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        /* DARK MODE VARIABLES */
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-main: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8; 
+            --accent-light: #0c4a6e;
+            --timeline-line: #475569;
+            --nav-bg: rgba(26, 26, 26, 0.95);
+            --nav-border: #404040;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.5);
+        }
+
+        /* Basic Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
+        html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-height) + 20px); }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; padding-top: var(--nav-height); transition: background-color 0.3s, color 0.3s; }
+        
+        /* --- Navigation Toolbar --- */
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height); background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--nav-border); z-index: 1000; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s, border-color 0.3s; }
+        .nav-container { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 3rem; }
+        .logo { font-weight: 800; font-size: 1.25rem; color: var(--text-main); text-decoration: none; }
+        .nav-right-group { display: flex; align-items: center; gap: 2rem; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; font-size: 0.95rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- THEME SWITCH --- */
+        .theme-switch-wrapper { display: flex; align-items: center; }
+        .theme-switch { display: inline-block; height: 30px; position: relative; width: 55px; }
+        .theme-switch input { display: none; }
+        .slider { background-color: #e4e4e4; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+        .slider:before { background-color: #fff; bottom: 3px; content: ""; height: 24px; left: 4px; position: absolute; transition: .4s; width: 24px; border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: #333333; }
+        input:checked + .slider:before { transform: translateX(24px); background-color: #555555; box-shadow: none; }
+
+        /* Layout Container */
+        .container { 
+            max-width: 1250px; /* INCREASED WIDTH HERE */
+            margin: 0 auto; 
+            padding: 2rem; 
+        }
+
+        /* --- NEW HERO / ABOUT SECTION --- */
+        #hero {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 4rem; /* Increased gap for wider layout */
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem; /* Slightly larger title for wider screen */
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.05rem;
+            color: var(--text-main);
+        }
+
+        .hero-text .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .contact-info {
+            margin-bottom: 2rem;
+        }
+
+        .contact-info a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-right: 16px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .contact-info a:hover {
+            color: var(--accent);
+        }
+
+        .about-text {
+            font-size: 1.05rem; /* Slightly larger text for readability on wide screens */
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .hero-image {
+            flex-shrink: 0;
+            width: 350px; /* Increased image size slightly */
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            object-fit: cover;
+        }
+
+        /* --- Section Styling --- */
+        section { margin-bottom: 5rem; }
+        .section-title { font-size: 1.75rem; font-weight: 800; text-align: center; margin-bottom: 3rem; position: relative; }
+        .section-title::after { content: ''; display: block; width: 60px; height: 4px; background: var(--accent); margin: 0.5rem auto 0; border-radius: 2px; }
+
+        /* --- News Section --- */
+        .news-grid { display: flex; flex-direction: column; gap: 1rem; max-width: 900px; /* Wider news grid */ margin: 0 auto; }
+        /* .news-card { display: flex; background: var(--card-bg); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--timeline-line); box-shadow: var(--shadow); align-items: center; transition: transform 0.2s, border-color 0.2s; } */
+        .news-card:hover { transform: translateX(5px); border-color: var(--accent); }
+        .news-date-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--accent-light); color: var(--accent); padding: 0.5rem 1rem; border-radius: 8px; min-width: 80px; margin-right: 1.5rem; font-weight: 700; line-height: 1.2; }
+        .news-day { font-size: 1.1rem; }
+        .news-year { font-size: 0.7rem; opacity: 0.8; }
+        .news-content p { margin: 0; color: var(--text-main); font-weight: 600; font-size: 1.05rem; }
+        .news-tag { font-size: 0.85rem; color: var(--text-secondary); display: block; margin-top: 4px; }
+
+        /* --- Timeline (Compact) --- */
+        .timeline-centered { position: relative; max-width: 1000px; margin: 0 auto; padding: 20px 0; }
+        .timeline-centered::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--timeline-line); transform: translateX(-50%); }
+        .timeline-item { position: relative; margin-bottom: 15px; width: 50%; padding: 0 40px; clear: both; }
+        .timeline-item.left { left: 0; text-align: right; }
+        .timeline-item.right { left: 50%; text-align: left; }
+        .timeline-marker { position: absolute; top: 6px; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; z-index: 2; box-shadow: 0 0 0 4px var(--bg-color); }
+        .timeline-item.left .timeline-marker { right: -8px; }
+        .timeline-item.right .timeline-marker { left: -8px; }
+        .timeline-meta { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
+        .timeline-item.left .timeline-meta { justify-content: flex-end; }
+        .timeline-item.right .timeline-meta { justify-content: flex-start; }
+        .meta-date { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; white-space: nowrap; }
+        .meta-company { background: var(--accent-light); color: var(--accent); padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; box-shadow: var(--shadow); }
+        .timeline-card-simple { background: var(--card-bg); padding: 18px 25px; border-radius: 8px; box-shadow: var(--shadow); display: inline-block; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; border: 1px solid var(--timeline-line); min-width: 220px; text-align: left; }
+        .timeline-card-simple:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .timeline-card-simple h3 { margin: 0; font-size: 1.1rem; color: var(--text-main); font-weight: 600; }
+        .click-hint { font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px; display: block; opacity: 0.7; }
+
+        /* --- Projects Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--timeline-line); transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: var(--accent); }
+        .tech-stack { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-top: 1rem; background: var(--accent-light); display: inline-block; padding: 2px 8px; border-radius: 4px; }
+        
+        /* --- Blog & Pubs --- */
+        .blog-list { display: flex; flex-direction: column; gap: 1rem; max-width: 900px; margin: 0 auto; }
+        .blog-item { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--timeline-line); transition: 0.2s; }
+        .blog-item:hover { border-color: var(--accent); }
+        .blog-date { color: var(--text-secondary); font-size: 0.85rem; min-width: 100px; }
+        .blog-title { font-weight: 600; font-size: 1.05rem; flex-grow: 1; color: var(--text-main); }
+        .read-more { color: var(--accent); font-size: 0.9rem; font-weight: 600; text-decoration: none; }
+
+        /* --- Gallery --- */
+        .slider-section { position: relative; overflow: hidden; padding: 2rem 0; background: transparent; user-select: none; }
+        .slider-wrapper { overflow: hidden; width: 100%; cursor: grab; }
+        .slider-wrapper:active { cursor: grabbing; }
+        .slider-track { display: flex; gap: 30px; width: max-content; will-change: transform; }
+        .slide-item { width: 450px; height: 300px; flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; box-shadow: var(--shadow); pointer-events: none; }
+        .slide-item img { width: 100%; height: 100%; object-fit: cover; }
+        .slide-caption { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 10px; font-size: 1rem; text-align: center; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; z-index: 10; font-size: 24px; color: #333; box-shadow: 0 4px 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.1s; }
+        .slider-btn:hover { background: #fff; transform: translateY(-50%) scale(1.1); }
+        .prev-btn { left: 20px; }
+        .next-btn { right: 20px; }
+
+        /* --- Modal --- */
+        /* Fixed Centering & Internal Scroll */
+        .modal { display: none; position: fixed; z-index: 1100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+
+        .modal-content { background-color: var(--card-bg); color: var(--text-main); padding: 2.5rem; border-radius: 16px; width: 90%; max-width: 800px; position: relative; animation: slideUp 0.3s ease-out; box-shadow: var(--shadow); max-height: 85vh; overflow-y: auto; }
+        .news-card {
+            display: flex;
+            background: var(--card-bg);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--timeline-line);
+            box-shadow: var(--shadow);
+            align-items: center;
+            position: relative; /* REQUIRED: Anchors the absolute badge */
+            overflow: hidden;    /* Prevents badge from bleeding out of rounded corners */
+        }
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            padding: 2px 10px;
+            border-radius: 6px; /* Slightly more square look for corners */
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.03rem;
+            display: inline-block;
+        }   
+
+        /* Category Colors */
+        .badge-professional { background: #e0f2fe; color: #0369a1; } /* Blue */
+        .badge-award { background: #fef3c7; color: #92400e; }        /* Gold/Yellow */
+        .badge-research { background: #f3e8ff; color: #6b21a8; }     /* Purple */
+        .badge-education { background: #dcfce7; color: #166534; }    /* Green */
+
+        [data-theme="dark"] .badge-professional { background: #0c4a6e; color: #38bdf8; }
+        [data-theme="dark"] .badge-award { background: #78350f; color: #fbbf24; }
+        [data-theme="dark"] .badge-research { background: #581c87; color: #c084fc; }
+        [data-theme="dark"] .badge-education { background: #14532d; color: #4ade80; }
+
+        /* Prevent body scroll when modal is active */
+        .no-scroll {
+            overflow: hidden;
+        }
+        .close-btn { color: var(--text-secondary); float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-btn:hover { color: var(--accent); }
+        @keyframes slideUp { from {transform: translateY(20px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+        /* --- Footer --- */
+        footer { text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 2rem; border-top: 1px solid var(--timeline-line); }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .hero-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-image {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .nav-container { justify-content: center; position: relative; flex-direction: column; gap: 10px; padding: 10px; }
+            .nav-right-group { width: 100%; justify-content: space-between; overflow-x: auto; gap: 1rem; }
+            .nav-links { overflow-x: auto; padding-bottom: 5px; flex-shrink: 0; } 
+            
+            /* News mobile fix */
+            .news-card { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .news-date-box { flex-direction: row; gap: 5px; width: 100%; justify-content: flex-start; background: transparent; padding: 0; color: var(--accent); }
+            
+            /* Timeline Mobile Fix: Align Left */
+            .timeline-centered::before { left: 30px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 20px; margin-bottom: 25px; }
+            .timeline-item.left, .timeline-item.right { left: 0; text-align: left; }
+            .timeline-item.left .timeline-meta, .timeline-item.right .timeline-meta { justify-content: flex-start; flex-wrap: wrap; gap: 10px; }
+            .timeline-item.left .timeline-marker, .timeline-item.right .timeline-marker { left: 22px; right: auto; }
+
+            .slide-item { width: 300px; height: 200px; }
+            .slider-btn { display: none; } 
+            .badge {
+                position: static; /* Reverts to normal flow on small screens to avoid overlap */
+                margin-bottom: 8px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <time datetime="2022-11-24 23:00:00 +0530" class="published">November 24 2022</time>
 
-    <p>An application layer is an abstraction layer that specifies the shared communications protocols and interface methods that host in network use. It is the layer closest to the end user, implying that both the application layer and the end user can interact with the software application directly.
-Application layer protocols define how application processes (clients and servers), running on different end systems, pass messages to each other. It does not provide service to other layers because it is the topmost layer. The Application layer uses Transport and any levels below it to communicate with or transfer data to a remote host.
-What Are the Services Provided by the Application Layer?
-        The application provides the following services. </p>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="#" class="logo">Arjun.</a>
+        <div class="nav-right-group">
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#hero">About</a> <a href="#news">News</a>
+                <a href="#experience">Experience</a>
+                <a href="#projects">Projects</a>
+                <a href="#philanthropy">Philanthropy</a>
+                <a href="#blogs">Blogs</a>
+                <a href="#publications">Publications</a>
+                <a href="#gallery">Gallery</a>
+            </div>
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+</nav>
 
-<p>The application layer guarantees that the receiver is recognized, accessible, and ready to receive data from the sender.
-It enables authentication between devices for an extra layer of network security.
-It determines the protocol and data syntax rules at the application level.
-The protocols of the application layer also define the basic syntax of the message being forwarded or retrieved.
-It also checks whether the sender's computer has the necessary communication interfaces, such as an Ethernet or Wi-Fi interface.
-    Finally, the data on the receiving end is presented to the user application. </p>
-<p>Functions of the Application Layer
-The application layer provides the following functions.
+<div class="container">
 
-The Application Layer provides protocols that allow the software to communicate and receive data and finally present it to users in a meaningful way.
-This layer allows users to log on as a remote host.
-The Application Layer provides various facilities for users to forward multiple emails and a storage facility.
-This layer acts as a window via which users and application processes can access network resources.
-This layer provides services such as email, file transfer, results distribution, directory services, network resources, etc.
-The application layer communicates with the operating system and guarantees that data is properly saved.
-This layer allows users to interact with other software applications.
-This application layer generally performs host initialization followed by remote login to hosts.
-This layer visualizes data, allowing individuals to grasp it rather than memorize it or see it in binary format (1s or 0s). </p>
+    <section id="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Arjun Thakur</h1>
+                <p class="subtitle">Software Engineer 2 @ JPMorgan Chase & Co. | Institute Topper & Gold Medalist</p>
+                <div class="contact-info">
+                    <a href="mailto:tarjun054@gmail.com">Email</a>
+                    <a href="https://www.linkedin.com/in/arjun-thakur-78b988200" target="_blank">LinkedIn</a>
+                    <a href="https://github.com/ArjunT13" target="_blank">GitHub</a>
+                </div>
+                <p class="about-text">
+                    Hello! I am currently a <strong>Software Engineer 2</strong> at <strong>JPMorgan Chase & Co.</strong>, where I focus on optimizing low-latency pricing systems and building resilient distributed infrastructure. Previously, I completed my B.Tech. in Computer Engineering at <strong>VIT Pune</strong>, graduating as the <strong>Institute Topper</strong> and Gold Medalist.
+                </p>
+                <p class="about-text">
+                    I am broadly interested in the intersection of <strong>Distributed Systems</strong> and <strong>Machine Learning</strong>. I love designing scalable backends, working with technologies like Solace and AWS, and exploring how ML can be applied to solve real-world problems (such as my work on Cardiovascular Risk Prediction).
+                </p>
+            </div>
+            <div class="hero-image">
+                <img src="https://via.placeholder.com/350x350" alt="Arjun Thakur">
+            </div>
+        </div>
+    </section>
+
+    <section id="news">
+        <h2 class="section-title">Latest Updates</h2>
+        <div class="news-grid">
+            <div class="news-card">
+                <div class="news-date-box">
+                    <span class="news-day">Jan 21</span>
+                    <span class="news-year">2026</span>
+                </div>
+                <div class="news-content">
+                    <p>I got an early promotion to Software Engineer 2 ! Yay!</p>
+                    <span class="news-tag">Promoted to SDE2 via the SEP Accelerated Program — an honor given to only 8-10% of the 2024 global graduate pool.</span>
+                </div>
+            </div>
+            <div class="news-card">
+                <div class="news-date-box">
+                    <span class="news-day">Jun 29</span>
+                    <span class="news-year">2024</span>
+                </div>
+                <div class="news-content">
+                    <p>Software Engineer 1</p>
+                    <span class="news-tag">I've accepted the full-time offer from J.P. Morgan Chase & Co. Had an exciting first day !!</span>
+                </div>
+            </div>
+            <div class="news-card">
+                <div class="news-date-box">
+                    <span class="news-day">2023</span>
+                    <span class="news-year">SIH</span>
+                </div>
+                <div class="news-content">
+                    <p>Smart India Hackathon Winner</p>
+                    <span class="news-tag">Secured 1st rank nationally in the Grand Finale.</span>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="read-more" id="seeMoreNews" style="background: none; border: 1px solid var(--accent); padding: 10px 25px; border-radius: 25px; cursor: pointer;">See All News &rarr;</button>
+        </div>
+        
+        <div id="newsModal" class="modal">
+            <div class="modal-content" style="max-width: 800px;">
+                <span class="close-btn" onclick="closeNewsModal()">&times;</span>
+                <h2 style="margin-bottom: 2rem;">All Updates</h2>
+                <div id="fullNewsList" class="news-grid">
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience">
+        <h2 class="section-title">Timeline</h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.9rem;">(Click on a role to view details)</p>
+        
+        <div class="timeline-centered">
+            
+            <div class="timeline-item left">
+                <div class="timeline-marker"></div>
+                <div class="timeline-meta">
+                    <span class="meta-date">July 2024 - Present</span>
+                    <span class="meta-company">J.P. Morgan Chase & Co.</span>
+                </div>
+                <div class="timeline-card-simple" onclick="openModal('Software Engineer 2', 'Optimized low-latency pricing data (10-40ms) and built automated DR infra for 99.98% availability using Pub/Sub Solace. Recently promoted from SE1 to SE2 via SEP program.', 'Solace, Java, Spring Boot, Distributed Systems')">
+                    <h3>Software Engineer 2</h3>
+                    <span class="click-hint">View Description &rarr;</span>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="timeline-marker"></div>
+                <div class="timeline-meta">
+                    <span class="meta-company">J.P. Morgan Chase & Co.</span>
+                    <span class="meta-date">Jan 2024 - June 2024</span>
+                </div>
+                <div class="timeline-card-simple" onclick="openModal('Software Engineer Intern', 'Migrated AWS components to ECS resulting in a 20% cost reduction. Engineered Spring Boot APIs for job scheduling and optimized database queries.', 'AWS ECS, Spring Boot, SQL')">
+                    <h3>Software Engineer Intern</h3>
+                    <span class="click-hint">View Description &rarr;</span>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="timeline-marker"></div>
+                <div class="timeline-meta">
+                    <span class="meta-date">Aug 2023 - Jan 2024</span>
+                    <span class="meta-company">Arizona State University</span>
+                </div>
+                <div class="timeline-card-simple" onclick="openModal('Research Assistant', 'Designed joint fusion models (CNN + MLP) for post-PCI outcome prediction, achieving state-of-the-art AUROC scores. Collaborated with Dr. Min Xu on medical imaging research.', 'Python, PyTorch, CNN, Medical AI')">
+                    <h3>Research Assistant</h3>
+                    <span class="click-hint">View Description &rarr;</span>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="timeline-marker"></div>
+                <div class="timeline-meta">
+                    <span class="meta-company">VIT Pune</span>
+                    <span class="meta-date">2020 - 2024</span>
+                </div>
+                <div class="timeline-card-simple" onclick="openModal('B.Tech Computer Engineering', 'Graduated with 9.74 CGPA. Awarded Institute Gold Medal and Best Outgoing Student. Led the Coding Club and IEEE Student Branch.', 'Academics, Leadership, C++, Data Structures')">
+                    <h3>B.Tech Computer Engineering</h3>
+                    <span class="click-hint">View Description &rarr;</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="grid">
+            <div class="card" onclick="openModal('CardioSure', 'Deployed a Random Forest classifier model (AUROC: 0.985) on AWS SageMaker. Designed an API utilizing AWS Lambda to trigger endpoints and notify users via AWS SNS.', 'AWS SageMaker, Lambda, Python')">
+                <div>
+                    <h3>CardioSure</h3>
+                    <p>ML Application on AWS for Cardiovascular Risk Prediction.</p>
+                </div>
+                <div class="tech-stack">Click for Details</div>
+            </div>
+            <div class="card" onclick="openModal('PyCoInterpreter', 'Engineered an end-to-end combination of compiler and interpreter for Python. Handles lexical analysis, syntax/semantic analysis, byte code generation, and optimization.', 'C, C++, Lex, Yacc')">
+                <div>
+                    <h3>PyCoInterpreter</h3>
+                    <p>A custom Compiler and Interpreter for Python language.</p>
+                </div>
+                <div class="tech-stack">Click for Details</div>
+            </div>
+            <div class="card" onclick="openModal('OCR Text Extraction', 'Used a progressive approach: segmentation of paragraphs/lines using OpenCV, followed by character recognition using CNN + Bi-LSTM. Achieved CER score of 8.50.', 'OpenCV, Deep Learning, NLP')">
+                <div>
+                    <h3>OCR Text Extraction</h3>
+                    <p>Handwritten text extraction and translation to regional languages.</p>
+                </div>
+                <div class="tech-stack">Click for Details</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="philanthropy">
+        <h2 class="section-title">Philanthropy & Community</h2>
+        <div class="grid">
+            <div class="card" style="cursor: default; border-color: transparent;">
+                <h3>Teaching Assistant</h3>
+                <p><strong>VIT Pune</strong></p>
+                <p>Mentored students in the "Problem Solving and Programming in C" course (ES1034), providing academic guidance and support.</p>
+            </div>
+            <div class="card" style="cursor: default; border-color: transparent;">
+                <h3>Coding Club Head & IEEE</h3>
+                <p><strong>Student Branch Leadership</strong></p>
+                <p>Led the team during 3+ technical workshops (Python, ML/AI, Blockchain), engaging over 200+ students and framing questions for coding competitions.</p>
+            </div>
+            <div class="card" style="cursor: default; border-color: transparent;">
+                <h3>Social Initiatives</h3>
+                <p><strong>Community Service</strong></p>
+                <p>Active participant in local community betterment initiatives and donation drives.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="blogs">
+        <h2 class="section-title">Recent Blogs</h2>
+        <div class="blog-list">
+            <div class="blog-item">
+                <span class="blog-date">Feb 10, 2024</span>
+                <span class="blog-title">Optimizing Low-Latency Systems in Finance</span>
+                <a href="#" class="read-more">Read &rarr;</a>
+            </div>
+            <div class="blog-item">
+                <span class="blog-date">Jan 05, 2024</span>
+                <span class="blog-title">Understanding Attention Mechanisms in CNNs</span>
+                <a href="#" class="read-more">Read &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="publications">
+        <h2 class="section-title">Publications</h2>
+        <div class="blog-list">
+            <div class="blog-item">
+                <span class="blog-date">IEEE (2023)</span>
+                <div style="flex-grow: 1; padding: 0 1rem;">
+                    <span class="blog-title" style="display: block;">Cardiovascular Risk Prediction using Machine Learning on AWS</span>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">DOI: 10.1109/ICIT58056.2023.102257930</span>
+                </div>
+                <a href="https://doi.org/10.1109/ICIT58056.2023.102257930" target="_blank" class="read-more">View Paper &rarr;</a>
+            </div>
+            <div class="blog-item">
+                <span class="blog-date">Elsevier (2025)</span>
+                <div style="flex-grow: 1; padding: 0 1rem;">
+                    <span class="blog-title" style="display: block;">Joint Fusion Model for Post-PCI Outcome Prediction</span>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">DOI: 10.1016/j.compbiomed.2025.109966</span>
+                </div>
+                <a href="https://doi.org/10.1016/j.compbiomed.2025.109966" target="_blank" class="read-more">View Paper &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery">
+        <h2 class="section-title">Gallery & Awards</h2>
+        <div class="slider-section">
+            <button class="slider-btn prev-btn" id="prevBtn">&#10094;</button>
+            <button class="slider-btn next-btn" id="nextBtn">&#10095;</button>
+            
+            <div class="slider-wrapper" id="sliderWrapper">
+                <div class="slider-track" id="sliderTrack">
+                    <div class="slide-item">
+                        <img src="https://via.placeholder.com/450x300?text=SIH+Winner" alt="Hackathon" loading="lazy">
+                        <div class="slide-caption">Winner - Smart India Hackathon 2023</div>
+                    </div>
+                    <div class="slide-item">
+                        <img src="https://via.placeholder.com/450x300?text=Institute+Topper" alt="Gold Medal" loading="lazy">
+                        <div class="slide-caption">Institute Gold Medalist</div>
+                    </div>
+                    <div class="slide-item">
+                        <img src="https://via.placeholder.com/450x300?text=Newspaper+Feature" alt="News" loading="lazy">
+                        <div class="slide-caption">Newspaper Recognition</div>
+                    </div>
+                    <div class="slide-item">
+                        <img src="https://via.placeholder.com/450x300?text=Teaching" alt="Teaching" loading="lazy">
+                        <div class="slide-caption">Workshop Mentorship</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Arjun Thakur. Hosted on GitHub Pages.</p>
+    </footer>
+
+</div>
+
+<div id="projectModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle" style="margin-bottom: 1rem;">Project Title</h2>
+        <p id="modalDesc" style="color: var(--text-secondary); margin-bottom: 1.5rem;">Description goes here.</p>
+        <div style="background: var(--bg-color); padding: 1rem; border-radius: 8px;">
+            <strong>Details/Stack:</strong> <span id="modalTech" style="color: var(--accent);"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. Theme Switch ---
+    const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') toggleSwitch.checked = true;
+    }
+    function switchTheme(e) {
+        if (e.target.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }    
+    }
+    toggleSwitch.addEventListener('change', switchTheme, false);
+
+    // --- 2. Modal Logic ---
+    const modal = document.getElementById("projectModal");
+    const title = document.getElementById("modalTitle");
+    const desc = document.getElementById("modalDesc");
+    const tech = document.getElementById("modalTech");
+
+    function openModal(projectTitle, projectDesc, projectTech) {
+        title.innerText = projectTitle;
+        desc.innerText = projectDesc;
+        tech.innerText = projectTech;
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // --- 4. News Modal Logic ---
+    const newsModal = document.getElementById("newsModal");
+    const fullNewsList = document.getElementById("fullNewsList");
+    const seeMoreBtn = document.getElementById("seeMoreNews");
+
+    // You can define all your news here as an array of objects
+    // const allNews = [
+    //     { date: "Jan 21", year: "2026", title: "Promoted to Software Engineer 2", tag: "Awarded early promotion via the SEP Accelerated Promotion Program at JPMC." },
+    //     { date: "2023", year: "IEEE", title: "Published Research Paper", tag: "Cardiovascular Risk Prediction published in IEEE." },
+    //     { date: "2023", year: "SIH", title: "Smart India Hackathon Winner", tag: "Secured 1st rank nationally in the Grand Finale." },
+    //     { date: "May 15", year: "2024", title: "Graduated Valedictorian", tag: "Ranked 1st among all engineering departments at VIT Pune." },
+    //     { date: "Aug 10", year: "2023", title: "Best Outgoing Student Award", tag: "Recognized for academic excellence and leadership by the Institute." }
+    // ];
+    const allNews = [
+        { 
+            date: "Jan 21", year: "2026", 
+            category: "professional", 
+            title: "I got an early promotion! Yay!", 
+            tag: "Promoted to SDE2 via the SEP Accelerated Program — an honor given to only 8-10% of the 2024 global graduate pool." 
+        },
+        { 
+            date: "2023", year: "IEEE", 
+            category: "research", // Add this
+            title: "Published Research Paper", 
+            tag:     "Cardiovascular Risk Prediction on AWS." 
+        },
+        { 
+            date: "2023", year: "IEEE", 
+            category: "research", // Add this
+            title: "Published Research Paper", 
+            tag:     "Cardiovascular Risk Prediction on AWS." 
+        },
+        { 
+            date: "2023", year: "SIH", 
+            category: "award", // Add this
+            title: "Smart India Hackathon Winner", 
+            tag: "1st rank nationally in the Grand Finale." 
+        },
+        {
+            date: "May 15", year: "2024", 
+            category: "award",
+            title: "Graduated Valedictorian", 
+            tag: "Ranked 1st among all engineering departments at VIT Pune." 
+        },
+        {
+            date: "May 15", year: "2024", 
+            category: "award",
+            title: "Graduated Valedictorian", 
+            tag: "Ranked 1st among all engineering departments at VIT Pune." 
+        }
+    ];
+
+    function openNewsModal() {
+        fullNewsList.innerHTML = '';
+        allNews.forEach(item => {
+            const categoryClass = `badge-${item.category}`;
+            const categoryText = item.category.toUpperCase();
+
+            fullNewsList.innerHTML += `
+                <div class="news-card">
+                    <span class="badge ${categoryClass}">${categoryText}</span>
+                    
+                    <div class="news-date-box">
+                        <span>${item.date}</span>
+                        <span>${item.year}</span>
+                    </div>
+                    
+                    <div class="news-content" style="padding-top: 5px;">
+                        <p>${item.title}</p>
+                        <span class="news-tag">${item.tag}</span>
+                    </div>
+                </div>`;
+        });
+        newsModal.style.display = "flex";
+        document.body.classList.add('no-scroll');
+    }
+
+    function closeNewsModal() {
+        newsModal.style.display = "none";
+        document.body.classList.remove('no-scroll');
+    }
+
+    // Ensure the project modal also locks scroll
+    function openModal(projectTitle, projectDesc, projectTech) {
+        title.innerText = projectTitle;
+        desc.innerText = projectDesc;
+        tech.innerText = projectTech;
+        modal.style.display = "flex"; // Changed to flex
+        document.body.classList.add('no-scroll');
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+        document.body.classList.remove('no-scroll');
+    }
+
+    seeMoreBtn.addEventListener('click', openNewsModal);
+
+    // Update window.onclick to handle both modals
+    window.onclick = function(event) {
+        if (event.target == modal) closeModal();
+        if (event.target == newsModal) closeNewsModal();
+    }
+
+    // --- 3. Gallery Logic ---
+    const track = document.getElementById('sliderTrack');
+    const wrapper = document.getElementById('sliderWrapper');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const originalContent = track.innerHTML;
+    track.innerHTML = originalContent + originalContent + originalContent;
+    
+    const cardWidth = 480; 
+    const itemsPerSet = 4;
+    const setWidth = cardWidth * itemsPerSet;
+    let currentTrans = -setWidth; 
+    track.style.transform = `translateX(${currentTrans}px)`;
+
+    let isDown = false, startX, scrollLeft, isPaused = false, autoScrollSpeed = 0.8, animationId;
+
+    function autoScroll() {
+        if (!isPaused) {
+            currentTrans -= autoScrollSpeed;
+            checkBoundary();
+            track.style.transform = `translateX(${currentTrans}px)`;
+        }
+        animationId = requestAnimationFrame(autoScroll);
+    }
+    animationId = requestAnimationFrame(autoScroll);
+
+    function checkBoundary() {
+        if (currentTrans <= -(setWidth * 2)) currentTrans += setWidth;
+        if (currentTrans >= 0) currentTrans -= setWidth;
+    }
+
+    wrapper.addEventListener('mousedown', (e) => { isDown = true; isPaused = true; wrapper.style.cursor = 'grabbing'; startX = e.pageX - wrapper.offsetLeft; scrollLeft = currentTrans; });
+    wrapper.addEventListener('mouseleave', () => { isDown = false; isPaused = false; wrapper.style.cursor = 'grab'; });
+    wrapper.addEventListener('mouseup', () => { isDown = false; isPaused = false; wrapper.style.cursor = 'grab'; });
+    wrapper.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - wrapper.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        currentTrans = scrollLeft + walk;
+        if (currentTrans <= -(setWidth * 2)) currentTrans += setWidth;
+        if (currentTrans >= 0) currentTrans -= setWidth;
+        track.style.transform = `translateX(${currentTrans}px)`;
+    });
+
+    function slideBy(amount) {
+        isPaused = true;
+        track.style.transition = 'transform 0.5s ease-in-out';
+        currentTrans += amount;
+        track.style.transform = `translateX(${currentTrans}px)`;
+        setTimeout(() => {
+            track.style.transition = 'none';
+            if (currentTrans <= -(setWidth * 2)) currentTrans += setWidth;
+            if (currentTrans >= 0) currentTrans -= setWidth;
+            track.style.transform = `translateX(${currentTrans}px)`;
+            isPaused = false;
+        }, 500);
+    }
+
+    prevBtn.addEventListener('click', () => slideBy(cardWidth));
+    nextBtn.addEventListener('click', () => slideBy(-cardWidth));
+    wrapper.addEventListener('mouseenter', () => isPaused = true);
+</script>
+
 </body>
-
 </html>
